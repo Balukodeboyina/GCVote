@@ -1,8 +1,11 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { ENV } from './config/env.js';
 import { SocketManager } from './sockets/index.js';
 import { SystemHealth } from '@pulsevote/shared';
+import authRoutes from './routes/authRoutes.js';
+import presentationRoutes from './routes/presentationRoutes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -14,6 +17,7 @@ export function createApp(): Express {
     })
   );
 
+  app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -35,6 +39,12 @@ export function createApp(): Express {
 
     res.status(200).json(health);
   });
+
+  // Authentication routes
+  app.use('/api/auth', authRoutes);
+
+  // Presentation CRUD routes
+  app.use('/api/presentations', presentationRoutes);
 
   // 404 handler for unknown API routes
   app.use('/api/*', (_req: Request, res: Response) => {

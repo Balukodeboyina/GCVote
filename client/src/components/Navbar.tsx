@@ -1,7 +1,10 @@
-import { Activity, Radio } from 'lucide-react';
+import { Activity, Radio, UserCheck } from 'lucide-react';
 import { Badge } from './ui/Badge.js';
+import { useAuth } from '../context/AuthContext.js';
 
 export function Navbar() {
+  const { user } = useAuth();
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -21,12 +24,19 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Live System Mode Tag */}
+        {/* Right Status */}
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-            <Radio className="w-3.5 h-3.5 text-brand-400 animate-pulse" />
-            <span>Real-Time Engine Active</span>
-          </div>
+          {user ? (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
+              <UserCheck className="w-4 h-4 text-emerald-400" />
+              <span className="font-medium">{user.name}</span>
+            </div>
+          ) : (
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+              <Radio className="w-3.5 h-3.5 text-brand-400 animate-pulse" />
+              <span>Presenter Portal</span>
+            </div>
+          )}
         </div>
       </div>
     </header>

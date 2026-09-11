@@ -27,6 +27,8 @@ model Presentation {
   sessions    Session[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([ownerId])
 }
 
 model Slide {
