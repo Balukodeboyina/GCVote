@@ -1,7 +1,6 @@
 import { Navbar } from './components/Navbar.js';
 import { StatusIndicator } from './components/StatusIndicator.js';
 import { Card } from './components/ui/Card.js';
-import { Badge } from './components/ui/Badge.js';
 import { Layers, Database, Cpu, CheckCircle } from 'lucide-react';
 
 export function App() {

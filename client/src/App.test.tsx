@@ -27,22 +27,27 @@ globalThis.fetch = vi.fn().mockImplementation(() =>
 ) as unknown as typeof fetch;
 
 describe('PulseVote Client App Foundation Tests', () => {
-  it('renders PulseVote brand and v0.1 Foundation badge', () => {
+  it('renders PulseVote brand and v0.1 Foundation badge', async () => {
     render(<App />);
-    expect(screen.getByText(/Pulse/i)).toBeInTheDocument();
-    expect(screen.getByText(/v0.1 Foundation/i)).toBeInTheDocument();
+    const brandMatches = screen.getAllByText(/Pulse/i);
+    expect(brandMatches.length).toBeGreaterThan(0);
+    const badgeMatches = screen.getAllByText(/v0.1 Foundation/i);
+    expect(badgeMatches.length).toBeGreaterThan(0);
+    expect(await screen.findByText(/Operational/i)).toBeInTheDocument();
   });
 
-  it('renders Backend API and WebSocket Engine status cards', () => {
+  it('renders Backend API and WebSocket Engine status cards', async () => {
     render(<App />);
     expect(screen.getByText('Backend API')).toBeInTheDocument();
     expect(screen.getByText('WebSocket Engine')).toBeInTheDocument();
+    expect(await screen.findByText(/Operational/i)).toBeInTheDocument();
   });
 
-  it('renders architectural foundation cards', () => {
+  it('renders architectural foundation cards', async () => {
     render(<App />);
     expect(screen.getByText('Full-Stack Core')).toBeInTheDocument();
     expect(screen.getByText('Realtime Engine')).toBeInTheDocument();
     expect(screen.getByText('Data Schema')).toBeInTheDocument();
+    expect(await screen.findByText(/Operational/i)).toBeInTheDocument();
   });
 });
