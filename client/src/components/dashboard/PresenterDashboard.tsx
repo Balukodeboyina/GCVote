@@ -5,6 +5,7 @@ import { Button } from '../ui/Button.js';
 import { Badge } from '../ui/Badge.js';
 import { PresentationModal, PresentationData } from './PresentationModal.js';
 import { DeleteConfirmModal } from './DeleteConfirmModal.js';
+import { PresentationEditor } from '../editor/PresentationEditor.js';
 import {
   Plus,
   Edit2,
@@ -16,6 +17,7 @@ import {
   LogOut,
   FolderOpen,
   User,
+  Sliders,
 } from 'lucide-react';
 
 export interface Presentation {
@@ -32,6 +34,9 @@ export function PresenterDashboard() {
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Active Presentation being edited in Question Builder
+  const [activeEditingPresentation, setActiveEditingPresentation] = useState<Presentation | null>(null);
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -170,6 +175,22 @@ export function PresenterDashboard() {
       return isoStr;
     }
   };
+
+  if (activeEditingPresentation) {
+    return (
+      <PresentationEditor
+        presentation={{
+          id: activeEditingPresentation.id,
+          title: activeEditingPresentation.title,
+          description: activeEditingPresentation.description,
+        }}
+        onBack={() => {
+          setActiveEditingPresentation(null);
+          fetchPresentations();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8 animate-fadeIn">
@@ -326,13 +347,22 @@ export function PresenterDashboard() {
 
                   <div className="flex items-center gap-2">
                     <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => setActiveEditingPresentation(pres)}
+                      className="flex-1 text-xs gap-1.5 font-medium shadow-sm shadow-brand-500/20"
+                    >
+                      <Sliders className="w-3.5 h-3.5" />
+                      Edit Questions
+                    </Button>
+                    <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleEditOpen(pres)}
-                      className="flex-1 text-xs gap-1.5"
+                      className="text-xs px-2.5"
+                      title="Edit Details"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
-                      Edit
                     </Button>
                     <Button
                       variant="ghost"

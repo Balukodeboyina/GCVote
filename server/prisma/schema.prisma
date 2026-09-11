@@ -18,45 +18,47 @@ model User {
 }
 
 model Presentation {
-  id          String    @id @default(uuid())
+  id          String       @id @default(uuid())
   title       String
   description String?
   ownerId     String
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  questions   Question[]
   slides      Slide[]
   sessions    Session[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([ownerId])
 }
 
 model Slide {
-  id             String    @id @default(uuid())
+  id             String       @id @default(uuid())
   presentationId String
   presentation   Presentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
   orderIndex     Int
   title          String
-  question       Question?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@unique([presentationId, orderIndex])
 }
 
 model Question {
-  id               String       @id @default(uuid())
-  slideId          String       @unique
-  slide            Slide        @relation(fields: [slideId], references: [id], onDelete: Cascade)
-  type             String       @default("MULTIPLE_CHOICE")
-  title            String
-  description      String?
-  timeLimitSeconds Int?
-  points           Int?         @default(100)
-  options          Option[]
-  responses        Response[]
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  id             String       @id @default(uuid())
+  presentationId String
+  presentation   Presentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
+  type           String       @default("MULTIPLE_CHOICE")
+  questionText   String
+  position       Int          @default(0)
+  settings       String       @default("{}")
+  options        Option[]
+  responses      Response[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([presentationId])
+  @@index([presentationId, position])
 }
 
 model Option {
@@ -65,19 +67,19 @@ model Option {
   question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
   text       String
   isCorrect  Boolean    @default(false)
-  orderIndex Int
+  orderIndex Int        @default(0)
   responses  Response[]
   createdAt  DateTime   @default(now())
 
-  @@unique([questionId, orderIndex])
+  @@index([questionId])
 }
 
 model Session {
   id                 String       @id @default(uuid())
   presentationId     String
   presentation       Presentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
-  code               String       @unique // 6-digit alphanumeric uppercase code (e.g. 749201)
-  status             String       @default("WAITING") // WAITING, ACTIVE, PAUSED, ENDED
+  code               String       @unique
+  status             String       @default("WAITING")
   currentSlideIndex  Int          @default(0)
   acceptingResponses Boolean      @default(true)
   createdAt          DateTime     @default(now())
@@ -96,7 +98,7 @@ model Response {
   option        Option?  @relation(fields: [optionId], references: [id], onDelete: SetNull)
   textResponse  String?
   ratingValue   Int?
-  participantId String   // Anonymous voter identifier
+  participantId String
   createdAt     DateTime @default(now())
 
   @@index([sessionId, questionId])
@@ -104,15 +106,15 @@ model Response {
 }
 
 model QAQuestion {
-  id           String   @id @default(uuid())
-  sessionId    String
-  session      Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id            String   @id @default(uuid())
+  sessionId     String
+  session       Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   participantId String
-  questionText String
-  upvotesCount Int      @default(0)
-  isAnswered   Boolean  @default(false)
-  isPinned     Boolean  @default(false)
-  createdAt    DateTime @default(now())
+  questionText  String
+  upvotesCount  Int      @default(0)
+  isAnswered    Boolean  @default(false)
+  isPinned      Boolean  @default(false)
+  createdAt     DateTime @default(now())
 
   @@index([sessionId])
 }

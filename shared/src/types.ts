@@ -6,10 +6,12 @@ export type Role = 'PRESENTER' | 'PARTICIPANT' | 'ADMIN';
 
 export type QuestionType =
   | 'MULTIPLE_CHOICE'
-  | 'WORD_CLOUD'
-  | 'OPEN_ENDED'
+  | 'POLL'
+  | 'TRUE_FALSE'
   | 'RATING'
-  | 'QUIZ';
+  | 'OPEN_TEXT'
+  | 'WORD_CLOUD'
+  | 'Q_AND_A';
 
 export type SessionStatus = 'WAITING' | 'ACTIVE' | 'PAUSED' | 'ENDED';
 
@@ -26,6 +28,31 @@ export interface QuestionOption {
   text: string;
   isCorrect?: boolean;
   orderIndex: number;
+}
+
+export interface QuestionSettings {
+  allowMultiple?: boolean;
+  hasCorrectAnswer?: boolean;
+  correctOptionId?: string;
+  scaleMax?: 5 | 10;
+  lowLabel?: string;
+  highLabel?: string;
+  maxChars?: number;
+  placeholder?: string;
+  maxWordsPerParticipant?: number;
+  allowAnonymous?: boolean;
+}
+
+export interface QuestionDetail {
+  id: string;
+  presentationId: string;
+  type: QuestionType;
+  questionText: string;
+  position: number;
+  settings: string;
+  options: QuestionOption[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface QuestionSummary {
