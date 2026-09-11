@@ -1,0 +1,23 @@
+{
+  "name": "pulsevote",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w @pulsevote/server\" \"npm run dev -w @pulsevote/client\"",
+    "dev:server": "npm run dev -w @pulsevote/server",
+    "dev:client": "npm run dev -w @pulsevote/client",
+    "build:shared": "npm run build -w @pulsevote/shared",
+    "build": "npm run build -w @pulsevote/shared && npm run build -w @pulsevote/server && npm run build -w @pulsevote/client",
+    "test": "npm run test -w @pulsevote/server && npm run test -w @pulsevote/client",
+    "test:server": "npm run test -w @pulsevote/server",
+    "test:client": "npm run test -w @pulsevote/client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
